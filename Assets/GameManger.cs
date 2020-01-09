@@ -146,7 +146,7 @@ public class GameManger : MonoBehaviour
             {
                 if (IndexPos[i, j] == 0) continue;
                 //如果棋子就在最边 不用移动
-                if (j == IndexPos.GetLength(0) - 1) continue;
+                //if (j == IndexPos.GetLength(0) - 1) continue;
                     //检测下一格是否有棋子
                 if (IndexPos[i, j+1] == 0)
                 {
@@ -171,7 +171,7 @@ public class GameManger : MonoBehaviour
             for (int j = IndexPos.GetLength(0)-1; j >=0 ; j--)
             {
                 if (IndexPos[i, j] == 0) continue;
-                if (j - 1 <= 0) continue;
+                if (j - 1 < 0) continue;
                 //如果是相同的棋子 融合
                 if (IndexPos[i, j] == IndexPos[i, j - 1])
                 {
@@ -193,6 +193,7 @@ public class GameManger : MonoBehaviour
     {
         print("向上滑");
         isUp = false;
+        //移动棋子
         for (int i = 0; i < IndexPos.GetLength(1); i++)
         {
             for (int j = IndexPos.GetLength(0)-1; j >=0; j--)
@@ -251,6 +252,7 @@ public class GameManger : MonoBehaviour
     {
         print("向右滑");
         isRight = false;
+        //移动棋子
         for (int j = 0; j < IndexPos.GetLength(0); j++)
         {
             for (int i = 0; i < IndexPos.GetLength(1); i++)
@@ -260,19 +262,39 @@ public class GameManger : MonoBehaviour
                 if (i + 1 <= IndexPos.GetLength(1) - 1)
                 {
                     //检测下一格是否有棋子
-                    if (IndexPos[i+1,j] == 0)
+                    if (IndexPos[i + 1, j] == 0)
                     {
-                        IndexPos[i+1,j] = IndexPos[i, j];
+                        IndexPos[i + 1, j] = IndexPos[i, j];
                         IndexPos[i, j] = 0;
                     }
                     else
                     {
-                        //如果是相同的棋子 融合
-                        if (IndexPos[i,j] == IndexPos[i+1,j])
-                        {
-                            IndexPos[i+1,j] *= 2;
-                            IndexPos[i, j] = 0;
-                        }
+                        ////如果是相同的棋子 融合
+                        //if (IndexPos[i, j] == IndexPos[i + 1, j])
+                        //{
+                        //    IndexPos[i + 1, j] *= 2;
+                        //    IndexPos[i, j] = 0;
+                        //}
+                    }
+                }
+            }
+        }
+        //融合棋子
+        for (int j = 0; j < IndexPos.GetLength(0); j++)
+        {
+            for (int i = IndexPos.GetLength(1)-1; i >=0; i--)
+            {
+                if (IndexPos[i, j] == 0) continue;
+                if (i-1 < 0) continue;
+                if (IndexPos[i, j] == IndexPos[i - 1, j]) {
+                    IndexPos[i, j] *= 2;
+                    IndexPos[i - 1, j] = 0;
+
+                    for (int k = i-2; k >=0; k--)
+                    {
+                        if (IndexPos[k, j] == 0) break;
+                        IndexPos[k + 1, j] = IndexPos[k, j];
+                        IndexPos[k, j] = 0;
                     }
                 }
             }
@@ -283,7 +305,8 @@ public class GameManger : MonoBehaviour
     {
         print("向左滑");
         isLeft = false;
-        for (int j = 0; j < IndexPos.GetLength(0) ; j++)
+        //移动棋子
+        for (int j = 0; j < IndexPos.GetLength(0); j++)
         {
             for (int i = IndexPos.GetLength(1) - 1; i >= 0; i--)
             {
@@ -293,20 +316,44 @@ public class GameManger : MonoBehaviour
                 if (i - 1 >= 0)
                 {
                     //检测上一列是否有棋子
-                    if (IndexPos[i-1, j] == 0)
+                    if (IndexPos[i - 1, j] == 0)
                     {
-                        IndexPos[i-1, j] = IndexPos[i, j];
+                        IndexPos[i - 1, j] = IndexPos[i, j];
                         IndexPos[i, j] = 0;
                     }
                     else
                     {
-                        //如果是相同的棋子 融合
-                        if (IndexPos[i, j] == IndexPos[i-1, j])
-                        {
-                            IndexPos[i-1, j] *= 2;
-                            IndexPos[i, j] = 0;
-                        }
+                        ////如果是相同的棋子 融合
+                        //if (IndexPos[i, j] == IndexPos[i - 1, j])
+                        //{
+                        //    IndexPos[i - 1, j] *= 2;
+                        //    IndexPos[i, j] = 0;
+                        //}
                     }
+                }
+            }
+        }
+        //融合棋子
+        for (int j = 0; j < IndexPos.GetLength(0); j++)
+        {
+            for (int i = 0; i < IndexPos.GetLength(1); i++)
+            {
+                if (IndexPos[i, j] == 0) continue;
+                if (i + 1 > IndexPos.GetLength(1) - 1) continue;
+
+                if (IndexPos[i, j] == IndexPos[i + 1, j]) {
+                    IndexPos[i, j] *= 2;
+                    IndexPos[i + 1, j] = 0;
+                    
+                }
+                //其实就是遍历3和4列的位置 ，如果3位置是0那就不用便利了，3位置是0证明4也是0，因为都已经向左移动了
+                for (int k = i + 2; k < IndexPos.GetLength(1); k++)
+                {
+                    if (IndexPos[k, j] == 0) break;
+
+                    //if()
+                    IndexPos[k - 1, j] = IndexPos[k, j];
+                    IndexPos[k, j] = 0;
                 }
             }
         }
