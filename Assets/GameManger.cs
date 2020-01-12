@@ -305,55 +305,81 @@ public class GameManger : MonoBehaviour
     {
         print("向左滑");
         isLeft = false;
-        //移动棋子
+        #region 算法一
+        ////移动棋子
+        //for (int j = 0; j < IndexPos.GetLength(0); j++)
+        //{
+        //    for (int i = IndexPos.GetLength(1) - 1; i >= 0; i--)
+        //    {
+        //        if (IndexPos[i, j] == 0) continue;
+        //        //print(IndexPos[i,j]+" "+i+","+j );
+        //        //不能超出列数
+        //        if (i - 1 >= 0)
+        //        {
+        //            //检测上一列是否有棋子
+        //            if (IndexPos[i - 1, j] == 0)
+        //            {
+        //                IndexPos[i - 1, j] = IndexPos[i, j];
+        //                IndexPos[i, j] = 0;
+        //            }
+        //            else
+        //            {
+        //                ////如果是相同的棋子 融合
+        //                //if (IndexPos[i, j] == IndexPos[i - 1, j])
+        //                //{
+        //                //    IndexPos[i - 1, j] *= 2;
+        //                //    IndexPos[i, j] = 0;
+        //                //}
+        //            }
+        //        }
+        //    }
+        //}
+        ////融合棋子
+        //for (int j = 0; j < IndexPos.GetLength(0); j++)
+        //{
+        //    for (int i = 0; i < IndexPos.GetLength(1); i++)
+        //    {
+        //        if (IndexPos[i, j] == 0) continue;
+        //        if (i + 1 > IndexPos.GetLength(1) - 1) continue;
+
+        //        if (IndexPos[i, j] == IndexPos[i + 1, j]) {
+        //            IndexPos[i, j] *= 2;
+        //            IndexPos[i + 1, j] = 0;
+
+        //        }
+        //        //其实就是遍历3和4列的位置 ，如果3位置是0那就不用便利了，3位置是0证明4也是0，因为都已经向左移动了
+        //        for (int k = i + 2; k < IndexPos.GetLength(1); k++)
+        //        {
+        //            if (IndexPos[k, j] == 0) break;
+
+        //            //if()
+        //            IndexPos[k - 1, j] = IndexPos[k, j];
+        //            IndexPos[k, j] = 0;
+        //        }
+        //    }
+        //}
+        #endregion
+        //算法二
         for (int j = 0; j < IndexPos.GetLength(0); j++)
         {
-            for (int i = IndexPos.GetLength(1) - 1; i >= 0; i--)
+            for (int i = 1; i < IndexPos.GetLength(1); i++)
             {
                 if (IndexPos[i, j] == 0) continue;
-                //print(IndexPos[i,j]+" "+i+","+j );
-                //不能超出列数
-                if (i - 1 >= 0)
+                //找到棋子 向左遍历
+                int num = IndexPos[i, j];
+                for (int k = i-1; k >=0; k--)
                 {
-                    //检测上一列是否有棋子
-                    if (IndexPos[i - 1, j] == 0)
-                    {
-                        IndexPos[i - 1, j] = IndexPos[i, j];
-                        IndexPos[i, j] = 0;
+                    //如果是0就移动
+                    if (IndexPos[k, j] == 0) {
+                        IndexPos[k, j] = IndexPos[k+1, j];
+                        IndexPos[k + 1, j] = 0;
+                        continue;
                     }
-                    else
-                    {
-                        ////如果是相同的棋子 融合
-                        //if (IndexPos[i, j] == IndexPos[i - 1, j])
-                        //{
-                        //    IndexPos[i - 1, j] *= 2;
-                        //    IndexPos[i, j] = 0;
-                        //}
+                    //不是0就检测是否一样 一样合并
+                    if (IndexPos[k, j] != 0 && IndexPos[k, j] == IndexPos[k + 1, j]) {
+                        IndexPos[k, j] *= 2;
+                        IndexPos[k + 1, j] = 0;
                     }
-                }
-            }
-        }
-        //融合棋子
-        for (int j = 0; j < IndexPos.GetLength(0); j++)
-        {
-            for (int i = 0; i < IndexPos.GetLength(1); i++)
-            {
-                if (IndexPos[i, j] == 0) continue;
-                if (i + 1 > IndexPos.GetLength(1) - 1) continue;
-
-                if (IndexPos[i, j] == IndexPos[i + 1, j]) {
-                    IndexPos[i, j] *= 2;
-                    IndexPos[i + 1, j] = 0;
-                    
-                }
-                //其实就是遍历3和4列的位置 ，如果3位置是0那就不用便利了，3位置是0证明4也是0，因为都已经向左移动了
-                for (int k = i + 2; k < IndexPos.GetLength(1); k++)
-                {
-                    if (IndexPos[k, j] == 0) break;
-
-                    //if()
-                    IndexPos[k - 1, j] = IndexPos[k, j];
-                    IndexPos[k, j] = 0;
                 }
             }
         }
